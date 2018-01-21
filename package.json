@@ -1,0 +1,15 @@
+{
+  "name": "codeforces-rating-system",
+  "version": "1.0.0",
+  "description": "An implementation of Codeforces rating system as described on http://codeforces.com/contest/1/submission/13861109",
+  "main": "index.js",
+  "repository": "git@github.com:forthright48/codeforces-rating-system.git",
+  "author": "Mohammad Samiul Islam <forthright48@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "eslint": "^4.16.0"
+  },
+  "devDependencies": {
+    "eslint-config-google": "^0.9.1"
+  }
+}
