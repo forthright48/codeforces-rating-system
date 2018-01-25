@@ -31,13 +31,13 @@ class StandingsRow {
     this.party = party;
     this.points = points;
   }
-  get getRank() {
+  getRank() {
     return this.rank;
   }
-  get getParty() {
+  getParty() {
     return this.party;
   }
-  get getPoints() {
+  getPoints() {
     return this.points;
   }
 }
@@ -66,7 +66,7 @@ class CodeforcesRatingCalculator2 {
 
     const ratingChanges = new Map();
     contestants.forEach((contestant)=>{
-      ratingChanges[contestant.party] = contestant.delta;
+      ratingChanges.set(contestant.party, contestant.delta);
     });
     return ratingChanges;
   }
@@ -90,7 +90,7 @@ class CodeforcesRatingCalculator2 {
 
     contestants = contestants.map((contestant)=> {
       const midRank = Math.sqrt(contestant.rank * contestant.seed);
-      contestant.needRating = getRatingToRank(contestants, midRank);
+      contestant.needRating = this.getRatingToRank(contestants, midRank);
       contestant.delta = (contestant.needRating - contestant.rating) / 2;
       return contestant;
     });
@@ -158,7 +158,7 @@ class CodeforcesRatingCalculator2 {
 
   sortByPointsDesc(contestants) {
     contestants.sort(function(a, b) {
-      return a.points > b.points;
+      return b.points - a.points;
     });
   }
 
@@ -167,7 +167,7 @@ class CodeforcesRatingCalculator2 {
   }
 
   getEloWinProbability(a, b) {
-    return getEloWinProbabilityRating(a.rating, b.rating);
+    return this.getEloWinProbabilityRating(a.rating, b.rating);
   }
 
   getRatingToRank(contestants, rank) {
@@ -176,7 +176,7 @@ class CodeforcesRatingCalculator2 {
 
     while (right - left > 1) {
       const mid = (left + right) / 2;
-      if (getSeed(contestants, mid) < rank) {
+      if (this.getSeed(contestants, mid) < rank) {
         right = mid;
       } else {
         left = mid;
@@ -185,8 +185,8 @@ class CodeforcesRatingCalculator2 {
     return left;
   }
 
-  getSeed(contestants, mid) {
-    const extraContestant = new (null, 0, 0, rating);
+  getSeed(contestants, rating) {
+    const extraContestant = new Contestant(null, 0, 0, rating);
     let result = 1;
     contestants.forEach((other)=>{
       result += this.getEloWinProbability(other, extraContestant);
@@ -249,8 +249,50 @@ class Contestant {
   }
 }
 
+function getNewRatings(contestants) {
+  contestants = contestants.map((c)=>{
+    c.party = new Party(c.username);
+    return c;
+  });
+
+  // previousRatings
+  const previousRatings = new Map();
+  contestants.forEach((c)=>{
+    previousRatings.set(c.party, c.previousRating);
+  });
+
+  // standingsRows
+  const standingsRows = [];
+  const total = contestants.length;
+
+  contestants.forEach((c)=>{
+    const points = total - c.position;
+    const party = c.party;
+    if (points < 0) {
+      throw new Error(`Position of contestant is higher than length:
+        ${c.position}, ${c.username}`);
+    }
+    standingsRows.push(new StandingsRow(party, points));
+  });
+
+  const codeforcesRatingCalculator2 = new CodeforcesRatingCalculator2();
+  const ratingChanges = codeforcesRatingCalculator2.calculateRatingChanges(
+    previousRatings, standingsRows
+  );
+
+  contestants = contestants.map((c)=>{
+    c.delta = ratingChanges.get(c.party);
+    c.newRating = c.previousRating + c.delta;
+    delete c.party;
+    return c;
+  });
+
+  return contestants;
+}
+
 module.exports = {
   Party,
   StandingsRow,
   CodeforcesRatingCalculator2,
+  getNewRatings,
 };
