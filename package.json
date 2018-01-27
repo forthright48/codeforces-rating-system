@@ -1,6 +1,6 @@
 {
   "name": "codeforces-rating-system",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "An implementation of Codeforces rating system as described on http://codeforces.com/contest/1/submission/13861109",
   "main": "index.js",
   "repository": "git@github.com:forthright48/codeforces-rating-system.git",
