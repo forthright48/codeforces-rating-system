@@ -91,7 +91,9 @@ class CodeforcesRatingCalculator2 {
     contestants = contestants.map((contestant)=> {
       const midRank = Math.sqrt(contestant.rank * contestant.seed);
       contestant.needRating = this.getRatingToRank(contestants, midRank);
-      contestant.delta = (contestant.needRating - contestant.rating) / 2;
+      contestant.delta = Math.trunc(
+        (contestant.needRating - contestant.rating) / 2
+      );
       return contestant;
     });
 
@@ -103,7 +105,7 @@ class CodeforcesRatingCalculator2 {
       contestants.forEach((c)=>{
         sum += c.delta;
       });
-      let inc = -sum / contestants.length - 1;
+      let inc = Math.trunc(-sum / contestants.length - 1);
       contestants.forEach((contestant)=>{
         contestant.delta += inc;
       });
@@ -113,12 +115,12 @@ class CodeforcesRatingCalculator2 {
     {
       let sum = 0;
       const zeroSumCount = Math.min(
-        Math.floor(4 * Math.round(Math.sqrt(contestants.length))),
+        Math.trunc(4 * Math.round(Math.sqrt(contestants.length))),
         contestants.length);
       for (let i = 0; i < zeroSumCount; i++) {
           sum += contestants[i].delta;
       }
-      const inc = Math.min(Math.max(-sum / zeroSumCount, -10), 0);
+      const inc = Math.min(Math.max(Math.trunc(-sum / zeroSumCount), -10), 0);
       contestants = contestants.map((contestant)=>{
         contestant.delta += inc;
         return contestant;
@@ -175,7 +177,7 @@ class CodeforcesRatingCalculator2 {
     let right = 8000;
 
     while (right - left > 1) {
-      const mid = (left + right) / 2;
+      const mid = Math.trunc((left + right) / 2);
       if (this.getSeed(contestants, mid) < rank) {
         right = mid;
       } else {
