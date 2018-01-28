@@ -1,6 +1,6 @@
 const {
-  Party, StandingsRow, CodeforcesRatingCalculator2, getNewRatings
-} = require('../index.js');
+  getNewRatings,
+} = require('../src/index.js');
 
 const contestants = [{
   position: 1,

@@ -47,3 +47,7 @@ console.log(getNewRatings(contestants));
 //     newRating: 1448.0623575846355 } ]
 
 ```
+
+# index.js vs dist.js
+
+`dist.js` file is ES5 version of `index.js`.
