@@ -265,7 +265,7 @@ function getNewRatings(contestants) {
 
   // standingsRows
   const standingsRows = [];
-  const total = contestants.length;
+  const total = 1000000;
 
   contestants.forEach((c)=>{
     const points = total - c.position;
