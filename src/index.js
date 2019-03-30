@@ -90,7 +90,7 @@ class CodeforcesRatingCalculator2 {
 
     contestants = contestants.map((contestant)=> {
       const midRank = Math.sqrt(contestant.rank * contestant.seed);
-      contestant.needRating = this.getRatingToRank(contestants, midRank);
+      contestant.needRating = this.getRatingToRank(contestants, contestant, midRank);
       contestant.delta = Math.trunc(
         (contestant.needRating - contestant.rating) / 2
       );
@@ -172,13 +172,13 @@ class CodeforcesRatingCalculator2 {
     return this.getEloWinProbabilityRating(a.rating, b.rating);
   }
 
-  getRatingToRank(contestants, rank) {
+  getRatingToRank(contestants, contestant, rank) {
     let left = 1;
     let right = 8000;
 
     while (right - left > 1) {
       const mid = Math.trunc((left + right) / 2);
-      if (this.getSeed(contestants, mid) < rank) {
+      if (this.getSeed(contestants, contestant, mid) < rank) {
         right = mid;
       } else {
         left = mid;
@@ -187,11 +187,13 @@ class CodeforcesRatingCalculator2 {
     return left;
   }
 
-  getSeed(contestants, rating) {
+  getSeed(contestants, contestant, rating) {
     const extraContestant = new Contestant(null, 0, 0, rating);
     let result = 1;
     contestants.forEach((other)=>{
-      result += this.getEloWinProbability(other, extraContestant);
+      if (other != contestant) {
+        result += this.getEloWinProbability(other, extraContestant);
+      }
     });
     return result;
   }
